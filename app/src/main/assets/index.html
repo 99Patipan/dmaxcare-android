@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="color-scheme" content="light"><title>สมุดรถ D-Max</title>
+<style>
+:root{--navy:#0f172a;--blue:#2563eb;--bg:#f4f6fb;--mut:#64748b;--line:#e5e9f2;--ok:#16a34a;--warn:#d97706;--bad:#dc2626}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--navy);font-family:system-ui,-apple-system,sans-serif;padding-bottom:90px}
+header{background:linear-gradient(135deg,#0f172a,#1e40af);color:#fff;padding:20px 18px 70px;border-radius:0 0 28px 28px}
+header small{opacity:.7;font-size:12px}h1{font-size:22px;margin:4px 0 0}
+main{padding:0 14px;max-width:700px;margin:-52px auto 0}
+.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 18px #0f172a10}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hero>div{padding:2px 4px}
+.lb{font-size:12px;color:var(--mut)}.big{font-size:22px;font-weight:800;margin-top:3px}
+h3{margin:0 0 10px;font-size:16px}
+button{border:0;border-radius:12px;background:var(--blue);color:#fff;padding:12px 14px;font:600 14px inherit;font-family:inherit}
+button:active{opacity:.8}.sec{background:#e8edf6;color:var(--navy)}.dng{background:#fee2e2;color:#991b1b}.full{width:100%}.sm{padding:8px 12px;font-size:13px}
+input,textarea,select{width:100%;padding:12px;border:1px solid #d5dbe8;border-radius:12px;font:inherit;background:#fff;margin:5px 0 12px}
+input:focus,textarea:focus,select:focus{outline:2px solid #93b4ff;border-color:var(--blue)}
+label{font-size:13px;font-weight:650}textarea{min-height:70px}
+.row{display:flex;gap:10px}.row>*{flex:1}.hidden{display:none!important}
+.due{padding:12px 0;border-bottom:1px solid var(--line)}.due:last-child{border:0;padding-bottom:0}
+.dt{display:flex;justify-content:space-between;align-items:center;font-weight:700;gap:8px}
+.pill{font-size:11px;padding:3px 9px;border-radius:99px;font-weight:700;white-space:nowrap}
+.s0{background:#dcfce7;color:#166534}.s1{background:#fef3c7;color:#92400e}.s2{background:#fee2e2;color:#991b1b}
+.bar{height:8px;background:#e8edf6;border-radius:9px;margin:9px 0 6px;overflow:hidden}.bar i{display:block;height:100%;border-radius:9px}
+.b0{background:var(--ok)}.b1{background:var(--warn)}.b2{background:var(--bad)}
+.mut{color:var(--mut);font-size:13px;margin-top:3px;line-height:1.5}
+.rec{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.rec:last-child{border:0}
+.ic{width:42px;height:42px;border-radius:13px;background:#eaf0ff;display:grid;place-items:center;font-size:21px;flex:none}
+.rb{flex:1;min-width:0}.rt{display:flex;justify-content:space-between;gap:8px;font-weight:700}
+.thumb{max-width:100%;max-height:150px;border-radius:12px;margin-top:8px;display:block}
+.empty{text-align:center;color:var(--mut);padding:26px 8px;line-height:1.7}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;display:flex;justify-content:space-around;align-items:center;padding:8px 6px 10px;box-shadow:0 -4px 20px #0f172a14;border-radius:20px 20px 0 0}
+nav a{flex:1;text-align:center;font-size:11px;color:var(--mut);font-weight:650;padding:4px 0}nav a b{display:block;font-size:20px;font-weight:400}
+nav a.on{color:var(--blue)}nav .add{flex:none;width:56px;height:56px;border-radius:50%;background:var(--blue);color:#fff;font-size:28px;line-height:56px;margin-top:-26px;box-shadow:0 6px 16px #2563eb66}
+.gd{background:linear-gradient(135deg,#eff6ff,#e0e7ff)}
+#md{position:fixed;inset:0;background:#0f172a99;display:flex;align-items:center;justify-content:center;padding:24px;z-index:9}
+#md .box{background:#fff;border-radius:20px;padding:20px;width:100%;max-width:360px}
+#toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:99px;font-size:13px;z-index:10;opacity:0;transition:.25s;pointer-events:none}
+#toast.on{opacity:1}
+</style></head><body>
+<header><small>สมุดบันทึกการดูแลรถ • ใช้งานออฟไลน์</small><h1 id="car">Isuzu D-Max 1.9</h1></header>
+<main>
+<section id="home">
+<div class="card hero"><div onclick="setOdo()"><div class="lb">เลขไมล์ปัจจุบัน ✎</div><div class="big" id="odo">—</div><div class="lb">กม.</div></div><div><div class="lb">ค่าใช้จ่ายรวม</div><div class="big" id="total">฿0</div><div class="lb" id="year"></div></div></div>
+<div class="card"><h3>กำหนดบำรุงรักษา</h3><div id="dues"></div></div>
+<div class="card"><h3>รายการล่าสุด</h3><div id="recent"></div></div>
+</section>
+<section id="history" class="hidden"><div class="card"><h3>ประวัติทั้งหมด</h3><input id="q" placeholder="🔍 ค้นหารายการ / เลขไมล์ / หมายเหตุ" oninput="renderHist()"><div id="hist"></div></div></section>
+<section id="form" class="hidden"><div class="card"><h3 id="ft">เพิ่มประวัติซ่อม</h3>
+<input id="eid" type="hidden">
+<label>ประเภทงาน</label><select id="type" onchange="typeChg()"></select>
+<label>รายการ *</label><input id="task" placeholder="เช่น เปลี่ยนน้ำมันเครื่อง">
+<div class="row"><div><label>วันที่ *</label><input id="date" type="date"></div><div><label>เลขไมล์ (กม.) *</label><input id="rodo" type="number" inputmode="numeric" min="0" placeholder="125000"></div></div>
+<div class="row"><div><label>ค่าใช้จ่าย (บาท)</label><input id="cost" type="number" inputmode="decimal" min="0" step="0.01"></div><div><label>อู่ / ร้าน</label><input id="shop" placeholder="ไม่บังคับ"></div></div>
+<div class="row"><div><label>รอบถัดไป (กม.)</label><input id="ikm" type="number" inputmode="numeric" min="0"></div><div><label>รอบถัดไป (เดือน)</label><input id="imo" type="number" inputmode="numeric" min="0"></div></div>
+<label>หมายเหตุ / อะไหล่</label><textarea id="note"></textarea>
+<label>รูปใบเสร็จ (ไม่บังคับ)</label><input id="rcp" type="file" accept="image/*"><img id="pv" class="thumb hidden"><button type="button" id="rmp" class="sec sm hidden" style="margin:6px 0 12px" onclick="photo='';updPv()">ลบรูป</button>
+<div class="row"><button class="full" onclick="submitForm()">บันทึก</button><button class="sec full" onclick="resetForm();show('home')">ยกเลิก</button></div>
+<p class="mut">ใส่ 0 ในรอบถัดไปหากไม่ต้องการให้แจ้งกำหนด รูปจะถูกย่อให้อัตโนมัติ</p></div></section>
+<section id="backup" class="hidden">
+<div class="card gd"><h3>☁️ สำรองข้อมูลไป Google Drive</h3><p class="mut" id="lastbk"></p>
+<button class="full" onclick="doExport()">สำรองข้อมูลตอนนี้</button>
+<p class="mut">กดแล้วจะเปิดหน้าต่างเลือกที่บันทึก ให้เลือก <b>Drive</b> → เลือกโฟลเดอร์ → บันทึก (ต้องล็อกอิน Google ในเครื่อง) ไฟล์สำรองรวมรูปใบเสร็จทั้งหมด</p></div>
+<div class="card"><h3>กู้คืนข้อมูล</h3><button class="sec full" onclick="doImport()">เลือกไฟล์สำรองจาก Drive / เครื่อง</button><input id="imp" type="file" accept=".json" class="hidden"><p class="mut">การกู้คืนจะแทนที่ข้อมูลปัจจุบันทั้งหมด</p></div>
+<div class="card"><h3>ตั้งค่า</h3><label>ชื่อรถ / ทะเบียน</label><input id="cname" onchange="S.settings.name=this.value.trim()||'Isuzu D-Max 1.9';save()"><button class="dng full" onclick="clearAll()">ลบข้อมูลทั้งหมด</button></div>
+</section>
+</main>
+<nav><a id="n-home" onclick="show('home')"><b>🏠</b>ภาพรวม</a><a id="n-history" onclick="show('history')"><b>📋</b>ประวัติ</a><a class="add" onclick="newEntry()">＋</a><a id="n-backup" onclick="show('backup')"><b>☁️</b>สำรอง</a></nav>
+<div id="md" class="hidden"><div class="box"><h3 id="mt"></h3><p class="mut" id="mm"></p><input id="mi" class="hidden" type="number" inputmode="numeric"><div class="row"><button class="sec" id="mc">ยกเลิก</button><button id="mo">ตกลง</button></div></div></div>
+<div id="toast"></div>
+<script>
+const $=id=>document.getElementById(id),A=window.Android;
+const T=[{k:'oil',n:'น้ำมันเครื่อง + ไส้กรอง',i:'🛢️',km:10000,mo:6},{k:'diesel',n:'ไส้กรองดีเซล',i:'⛽',km:20000,mo:12},{k:'air',n:'ไส้กรองอากาศ',i:'💨',km:20000,mo:12},{k:'ac',n:'ไส้กรองแอร์ / ล้างแอร์',i:'❄️',km:20000,mo:12},{k:'brake',n:'น้ำมันเบรก',i:'🛑',km:40000,mo:24},{k:'gear',n:'น้ำมันเกียร์ / เฟืองท้าย',i:'⚙️',km:40000,mo:24},{k:'tire',n:'สลับยาง / ตั้งศูนย์',i:'🛞',km:10000,mo:6},{k:'battery',n:'แบตเตอรี่',i:'🔋',km:0,mo:24},{k:'other',n:'อื่น ๆ',i:'🔧',km:0,mo:0}];
+const tOf=k=>T.find(t=>t.k===k)||T[T.length-1];
+let S={records:[],settings:{name:'Isuzu D-Max 1.9',odo:0,lastBackup:''}},photo='',page='home';
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const pd=s=>new Date(s+'T00:00:00');
+function addMo(s,m){const d=pd(s),x=d.getDate();d.setMonth(d.getMonth()+m);if(d.getDate()<x)d.setDate(0);return d}
+const money=n=>Number(n||0).toLocaleString('th-TH',{maximumFractionDigits:2});
+const dTH=d=>(typeof d==='string'?pd(d):d).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function norm(r){return{id:r.id||'r'+Math.random().toString(36).slice(2),date:r.date||ymd(new Date()),odo:Number(r.odo)||0,type:tOf(r.type).k,task:r.task||'',cost:Number(r.cost)||0,shop:r.shop||'',intervalKm:Number(r.intervalKm)||0,intervalMo:Number(r.intervalMo)||0,note:r.note||'',photo:r.photo||''}}
+function load(){let raw='',old=null;
+ try{raw=A?A.loadData():''}catch(e){}
+ if(!raw)try{raw=localStorage.getItem('dmaxcare_v2')||''}catch(e){}
+ if(!raw)try{old=JSON.parse(localStorage.getItem('dmaxcare_records_v1')||'null')}catch(e){}
+ try{if(raw){const d=JSON.parse(raw);S.records=d.records||[];Object.assign(S.settings,d.settings||{})}else if(Array.isArray(old))S.records=old}catch(e){}
+ S.records=S.records.map(norm)}
+function persist(){const s=JSON.stringify({app:'DmaxCare',version:2,records:S.records,settings:S.settings});
+ try{if(A){if(!A.saveData(s))throw 0}else localStorage.setItem('dmaxcare_v2',s)}catch(e){toast('บันทึกไม่สำเร็จ พื้นที่อาจเต็ม')}}
+function save(){persist();render()}
+function curOdo(){return Math.max(Number(S.settings.odo)||0,...S.records.map(r=>r.odo),0)}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2200)}
+function modal(title,msg,o={}){return new Promise(res=>{$('mt').textContent=title;$('mm').textContent=msg||'';const i=$('mi');i.classList.toggle('hidden',!o.input);i.value=o.value||'';
+ $('mo').textContent=o.ok||'ตกลง';$('mo').className=o.danger?'dng':'';$('md').classList.remove('hidden');if(o.input)setTimeout(()=>i.focus(),50);
+ const done=v=>{$('md').classList.add('hidden');res(v)};$('mo').onclick=()=>done(o.input?i.value:true);$('mc').onclick=()=>done(o.input?null:false);window._mc=()=>done(o.input?null:false)})}
+function dues(){const o=curOdo(),now=new Date();now.setHours(0,0,0,0);const out=[];
+ T.filter(t=>t.k!=='other').forEach(t=>{const rs=S.records.filter(r=>r.type===t.k&&(r.intervalKm>0||r.intervalMo>0)).sort((a,b)=>b.date.localeCompare(a.date)||b.odo-a.odo);
+  if(!rs.length)return;const r=rs[0];let km=null,dy=null,due=null,p=0;
+  if(r.intervalKm>0){km=r.odo+r.intervalKm-o;p=Math.max(p,(o-r.odo)/r.intervalKm)}
+  if(r.intervalMo>0){due=addMo(r.date,r.intervalMo);dy=Math.round((due-now)/864e5);p=Math.max(p,1-dy/(Math.round((due-pd(r.date))/864e5)||1))}
+  const bad=(km!==null&&km<0)||(dy!==null&&dy<0),soon=(km!==null&&km<1000)||(dy!==null&&dy<30);
+  out.push({t,r,km,dy,due,p:Math.min(Math.max(p,0),1),s:bad?2:soon?1:0})});
+ return out.sort((a,b)=>b.s-a.s||b.p-a.p)}
+function dueHTML(d){const L=['ปกติ','ใกล้ถึงกำหนด','เลยกำหนด'][d.s],parts=[];
+ if(d.km!==null)parts.push(d.km<0?'เลย '+money(-d.km)+' กม.':'อีก '+money(d.km)+' กม.');
+ if(d.dy!==null)parts.push(d.dy<0?'เลย '+(-d.dy)+' วัน':'อีก '+d.dy+' วัน');
+ return`<div class="due"><div class="dt"><span>${d.t.i} ${d.t.n}</span><span class="pill s${d.s}">${L}</span></div><div class="bar"><i class="b${d.s}" style="width:${Math.round(d.p*100)}%"></i></div><div class="mut">${parts.join(' • ')}${d.due?' (ครบ '+dTH(d.due)+')':''}<br>ล่าสุด ${dTH(d.r.date)} ที่ ${money(d.r.odo)} กม.</div></div>`}
+function recHTML(r){const t=tOf(r.type);return`<div class="rec"><div class="ic">${t.i}</div><div class="rb"><div class="rt"><span>${esc(r.task)}</span><span>฿${money(r.cost)}</span></div><div class="mut">${dTH(r.date)} • ${money(r.odo)} กม.${r.shop?' • '+esc(r.shop):''}</div>${r.note?`<div class="mut">${esc(r.note)}</div>`:''}${r.photo?`<img class="thumb" src="${r.photo}">`:''}<div class="row" style="margin-top:9px"><button class="sec sm" onclick="editRec('${r.id}')">แก้ไข</button><button class="dng sm" onclick="delRec('${r.id}')">ลบ</button></div></div></div>`}
+function render(){S.records.sort((a,b)=>b.date.localeCompare(a.date)||b.odo-a.odo);
+ $('car').textContent=S.settings.name;$('cname').value=S.settings.name;
+ $('odo').textContent=curOdo()?money(curOdo()):'—';
+ $('total').textContent='฿'+money(S.records.reduce((s,r)=>s+r.cost,0));
+ const y=String(new Date().getFullYear());$('year').textContent='ปีนี้ ฿'+money(S.records.filter(r=>r.date.startsWith(y)).reduce((s,r)=>s+r.cost,0));
+ const d=dues();$('dues').innerHTML=d.length?d.map(dueHTML).join(''):'<div class="empty">ยังไม่มีกำหนดบำรุงรักษา<br>เพิ่มรายการประเภทน้ำมันเครื่อง/ไส้กรอง ระบบจะนับรอบให้อัตโนมัติ</div>';
+ $('recent').innerHTML=S.records.length?S.records.slice(0,3).map(recHTML).join(''):'<div class="empty">ยังไม่มีประวัติ<br>แตะปุ่ม ＋ เพื่อเริ่มบันทึก</div>';
+ const lb=S.settings.lastBackup,days=lb?Math.round((new Date()-pd(lb))/864e5):null;
+ $('lastbk').textContent=lb?'สำรองล่าสุด '+dTH(lb)+(days>30?' — นานเกิน 30 วันแล้ว ควรสำรองใหม่':''):'ยังไม่เคยสำรองข้อมูล แนะนำให้สำรองเป็นประจำ';
+ if(page==='history')renderHist()}
+function renderHist(){const q=$('q').value.toLowerCase(),l=S.records.filter(r=>[r.task,r.odo,r.note,r.shop,r.date,tOf(r.type).n].join(' ').toLowerCase().includes(q));
+ $('hist').innerHTML=l.length?l.map(recHTML).join(''):'<div class="empty">ไม่พบรายการ</div>'}
+function show(p){page=p;['home','history','form','backup'].forEach(x=>{$(x).classList.toggle('hidden',x!==p);const n=$('n-'+x);if(n)n.classList.toggle('on',x===p)});if(p==='history')renderHist();window.scrollTo(0,0)}
+window.onBack=()=>{if(!$('md').classList.contains('hidden')){window._mc&&window._mc();return true}if(page!=='home'){if(page==='form')resetForm();show('home');return true}return false};
+$('type').innerHTML=T.map(t=>`<option value="${t.k}">${t.i} ${t.n}</option>`).join('');
+function typeChg(){const t=tOf($('type').value),prev=T.map(x=>x.n);if(!$('task').value||prev.includes($('task').value))$('task').value=t.k==='other'?'':t.n;$('ikm').value=t.km;$('imo').value=t.mo}
+function resetForm(){$('eid').value='';['task','rodo','shop','note'].forEach(i=>$(i).value='');$('type').value='oil';$('cost').value=0;$('date').value=ymd(new Date());$('rcp').value='';photo='';updPv();$('ft').textContent='เพิ่มประวัติซ่อม';typeChg();$('rodo').value=curOdo()||''}
+function newEntry(){resetForm();show('form')}
+function updPv(){$('pv').src=photo;$('pv').classList.toggle('hidden',!photo);$('rmp').classList.toggle('hidden',!photo)}
+function shrink(f){return new Promise((ok,no)=>{const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.72))};im.onerror=no;im.src=u})}
+$('rcp').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{photo=await shrink(f);updPv()}catch(x){toast('อ่านรูปไม่สำเร็จ')}});
+function submitForm(){const id=$('eid').value,r=norm({id:id||undefined,date:$('date').value,odo:$('rodo').value,type:$('type').value,task:$('task').value.trim(),cost:$('cost').value,shop:$('shop').value.trim(),intervalKm:$('ikm').value,intervalMo:$('imo').value,note:$('note').value.trim(),photo});
+ if(!r.task||!$('date').value||$('rodo').value==='')return toast('กรอกรายการ วันที่ และเลขไมล์ก่อน');
+ S.records=id?S.records.map(x=>x.id===id?r:x):[...S.records,r];save();resetForm();show('home');toast('บันทึกแล้ว ✓')}
+function editRec(id){const r=S.records.find(x=>x.id===id);if(!r)return;show('form');$('ft').textContent='แก้ไขประวัติซ่อม';$('eid').value=r.id;$('type').value=r.type;$('task').value=r.task;$('date').value=r.date;$('rodo').value=r.odo;$('cost').value=r.cost;$('shop').value=r.shop;$('ikm').value=r.intervalKm;$('imo').value=r.intervalMo;$('note').value=r.note;photo=r.photo;updPv()}
+async function delRec(id){if(await modal('ลบรายการนี้?','ลบแล้วกู้คืนไม่ได้ (ยกเว้นจากไฟล์สำรอง)',{ok:'ลบ',danger:1})){S.records=S.records.filter(r=>r.id!==id);save()}}
+async function setOdo(){const v=await modal('อัปเดตเลขไมล์','กรอกเลขไมล์ปัจจุบัน (กม.) เพื่อให้คำนวณรอบบำรุงรักษาแม่นยำ',{input:1,value:curOdo()||'',ok:'บันทึก'});if(v!==null&&v!==''&&Number(v)>=0){S.settings.odo=Number(v);save();toast('อัปเดตแล้ว')}}
+function doExport(){const d=JSON.stringify({app:'DmaxCare',version:2,exportedAt:new Date().toISOString(),records:S.records,settings:S.settings}),n='dmaxcare-'+ymd(new Date())+'.json';
+ if(A)A.exportBackup(n,d);else{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([d],{type:'application/json'}));a.download=n;a.click();onExported(true)}}
+function onExported(ok){if(ok){S.settings.lastBackup=ymd(new Date());save();toast('สำรองข้อมูลสำเร็จ ✓')}else toast('ยกเลิกหรือสำรองไม่สำเร็จ')}
+function doImport(){A?A.importBackup():$('imp').click()}
+function onPicked(){handleImport(A.takePicked())}
+$('imp').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>handleImport(rd.result);rd.readAsText(f);e.target.value=''});
+async function handleImport(txt){let d;try{d=JSON.parse(txt);if(d.app!=='DmaxCare'||!Array.isArray(d.records))throw 0}catch(e){return toast('ไฟล์ไม่ถูกต้อง')}
+ if(await modal('กู้คืนข้อมูล','พบ '+d.records.length+' รายการ จะแทนที่ข้อมูลปัจจุบันทั้งหมด',{ok:'กู้คืน'})){S.records=d.records.map(norm);if(d.settings)Object.assign(S.settings,d.settings);save();toast('กู้คืนแล้ว ✓')}}
+async function clearAll(){if(await modal('ลบข้อมูลทั้งหมด?','ประวัติและรูปทั้งหมดจะถูกลบถาวร ควรสำรองก่อน',{ok:'ลบทั้งหมด',danger:1})){S.records=[];S.settings.odo=0;save()}}
+load();render();resetForm();show('home');
+</script></body></html>
