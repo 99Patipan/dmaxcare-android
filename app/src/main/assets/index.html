@@ -29,9 +29,9 @@ label{font-size:13px;font-weight:650}textarea{min-height:70px}
 .rb{flex:1;min-width:0}.rt{display:flex;justify-content:space-between;gap:8px;font-weight:700}
 .thumb{max-width:100%;max-height:150px;border-radius:12px;margin-top:8px;display:block}
 .empty{text-align:center;color:var(--mut);padding:26px 8px;line-height:1.7}
-nav{position:fixed;left:0;right:0;bottom:0;background:#fff;display:flex;justify-content:space-around;align-items:center;padding:8px 6px 10px;box-shadow:0 -4px 20px #0f172a14;border-radius:20px 20px 0 0}
-nav a{flex:1;text-align:center;font-size:11px;color:var(--mut);font-weight:650;padding:4px 0}nav a b{display:block;font-size:20px;font-weight:400}
-nav a.on{color:var(--blue)}nav .add{flex:none;width:56px;height:56px;border-radius:50%;background:var(--blue);color:#fff;font-size:28px;line-height:56px;margin-top:-26px;box-shadow:0 6px 16px #2563eb66}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding:8px 6px 10px;box-shadow:0 -4px 20px #0f172a14;border-radius:20px 20px 0 0}
+nav a{text-align:center;font-size:11px;color:var(--mut);font-weight:650;padding:4px 0}nav a b{display:block;font-size:20px;font-weight:400}
+nav a.on{color:var(--blue)}nav .add{justify-self:center;width:56px;height:56px;border-radius:50%;background:var(--blue);color:#fff;font-size:28px;line-height:56px;margin-top:-26px;padding:0;box-shadow:0 6px 16px #2563eb66}
 .gd{background:linear-gradient(135deg,#eff6ff,#e0e7ff)}
 #md{position:fixed;inset:0;background:#0f172a99;display:flex;align-items:center;justify-content:center;padding:24px;z-index:9}
 #md .box{background:#fff;border-radius:20px;padding:20px;width:100%;max-width:360px}
@@ -62,10 +62,11 @@ nav a.on{color:var(--blue)}nav .add{flex:none;width:56px;height:56px;border-radi
 <button class="full" onclick="doExport()">สำรองข้อมูลตอนนี้</button>
 <p class="mut">กดแล้วจะเปิดหน้าต่างเลือกที่บันทึก ให้เลือก <b>Drive</b> → เลือกโฟลเดอร์ → บันทึก (ต้องล็อกอิน Google ในเครื่อง) ไฟล์สำรองรวมรูปใบเสร็จทั้งหมด</p></div>
 <div class="card"><h3>กู้คืนข้อมูล</h3><button class="sec full" onclick="doImport()">เลือกไฟล์สำรองจาก Drive / เครื่อง</button><input id="imp" type="file" accept=".json" class="hidden"><p class="mut">การกู้คืนจะแทนที่ข้อมูลปัจจุบันทั้งหมด</p></div>
-<div class="card"><h3>ตั้งค่า</h3><label>ชื่อรถ / ทะเบียน</label><input id="cname" onchange="S.settings.name=this.value.trim()||'Isuzu D-Max 1.9';save()"><button class="dng full" onclick="clearAll()">ลบข้อมูลทั้งหมด</button></div>
+</section>
+<section id="settings" class="hidden"><div class="card"><h3>ตั้งค่า</h3><label>ชื่อรถ / ทะเบียน</label><input id="cname" onchange="S.settings.name=this.value.trim()||'Isuzu D-Max 1.9';save()"><button class="dng full" onclick="clearAll()">ลบข้อมูลทั้งหมด</button></div>
 </section>
 </main>
-<nav><a id="n-home" onclick="show('home')"><b>🏠</b>ภาพรวม</a><a id="n-history" onclick="show('history')"><b>📋</b>ประวัติ</a><a class="add" onclick="newEntry()">＋</a><a id="n-backup" onclick="show('backup')"><b>☁️</b>สำรอง</a></nav>
+<nav><a id="n-home" onclick="show('home')"><b>🏠</b>ภาพรวม</a><a id="n-history" onclick="show('history')"><b>📋</b>ประวัติ</a><a class="add" onclick="newEntry()">＋</a><a id="n-backup" onclick="show('backup')"><b>☁️</b>สำรอง</a><a id="n-settings" onclick="show('settings')"><b>⚙️</b>ตั้งค่า</a></nav>
 <div id="md" class="hidden"><div class="box"><h3 id="mt"></h3><p class="mut" id="mm"></p><input id="mi" class="hidden" type="number" inputmode="numeric"><div class="row"><button class="sec" id="mc">ยกเลิก</button><button id="mo">ตกลง</button></div></div></div>
 <div id="toast"></div>
 <script>
@@ -119,7 +120,7 @@ function render(){S.records.sort((a,b)=>b.date.localeCompare(a.date)||b.odo-a.od
  if(page==='history')renderHist()}
 function renderHist(){const q=$('q').value.toLowerCase(),l=S.records.filter(r=>[r.task,r.odo,r.note,r.shop,r.date,tOf(r.type).n].join(' ').toLowerCase().includes(q));
  $('hist').innerHTML=l.length?l.map(recHTML).join(''):'<div class="empty">ไม่พบรายการ</div>'}
-function show(p){page=p;['home','history','form','backup'].forEach(x=>{$(x).classList.toggle('hidden',x!==p);const n=$('n-'+x);if(n)n.classList.toggle('on',x===p)});if(p==='history')renderHist();window.scrollTo(0,0)}
+function show(p){page=p;['home','history','form','backup','settings'].forEach(x=>{$(x).classList.toggle('hidden',x!==p);const n=$('n-'+x);if(n)n.classList.toggle('on',x===p)});if(p==='history')renderHist();window.scrollTo(0,0)}
 window.onBack=()=>{if(!$('md').classList.contains('hidden')){window._mc&&window._mc();return true}if(page!=='home'){if(page==='form')resetForm();show('home');return true}return false};
 $('type').innerHTML=T.map(t=>`<option value="${t.k}">${t.i} ${t.n}</option>`).join('');
 function typeChg(){const t=tOf($('type').value),prev=T.map(x=>x.n);if(!$('task').value||prev.includes($('task').value))$('task').value=t.k==='other'?'':t.n;$('ikm').value=t.km;$('imo').value=t.mo}
